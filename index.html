@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>O que você prefere?</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --ink:   #1E1C18;
+  --ink2:  #2E2C27;
+  --linen: #F7F4EE;
+  --gold:  #8C7A4A;
+  --gold2: #C4A96A;
+  --moss:  #3D4A36;
+  --moss2: #5A6B52;
+}
+
+html, body {
+  min-height: 100%;
+  background: var(--ink);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100svh;
+  padding: 64px 24px 80px;
+  gap: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 50%, rgba(140,122,74,0.07) 0%, transparent 60%),
+    radial-gradient(ellipse 80% 60% at 80% 50%, rgba(61,74,54,0.12) 0%, transparent 60%),
+    var(--ink);
+}
+
+/* ── PERGUNTA ── */
+.pergunta {
+  font-size: clamp(13px, 1.8vw, 16px);
+  font-weight: 400;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(247,244,238,0.35);
+  margin-bottom: 52px;
+  text-align: center;
+}
+
+/* ── ARENA ── */
+.arena {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  width: 100%;
+  max-width: 900px;
+  perspective: 1400px;
+  perspective-origin: 50% 45%;
+}
+
+/* ── CARDS ── */
+.card {
+  flex: 1;
+  max-width: 340px;
+  min-height: 280px;
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 48px 40px 44px;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.55s cubic-bezier(0.22,1,0.36,1),
+              box-shadow 0.55s cubic-bezier(0.22,1,0.36,1);
+  cursor: default;
+}
+
+/* Card esquerdo — escuro/neutro */
+.card-left {
+  background: var(--ink2);
+  border: 1px solid rgba(247,244,238,0.06);
+  transform: rotateY(14deg) rotateX(2deg) rotateZ(-0.5deg) translateX(8px);
+  box-shadow:
+    -20px 32px 80px rgba(0,0,0,0.7),
+    -4px 8px 24px rgba(0,0,0,0.4),
+    inset 0 1px 0 rgba(247,244,238,0.04);
+  z-index: 1;
+}
+
+/* Card direito — vivo/positivo */
+.card-right {
+  background: var(--moss);
+  border: 1px solid rgba(247,244,238,0.10);
+  transform: rotateY(-14deg) rotateX(2deg) rotateZ(0.5deg) translateX(-8px);
+  box-shadow:
+    20px 32px 80px rgba(0,0,0,0.65),
+    4px 8px 24px rgba(0,0,0,0.35),
+    inset 0 1px 0 rgba(247,244,238,0.08);
+  z-index: 1;
+}
+
+/* Efeito hover — aproxima levemente */
+.card-left:hover {
+  transform: rotateY(8deg) rotateX(1deg) rotateZ(-0.3deg) translateX(4px) translateY(-4px);
+  box-shadow:
+    -24px 40px 96px rgba(0,0,0,0.75),
+    -6px 12px 32px rgba(0,0,0,0.45);
+}
+.card-right:hover {
+  transform: rotateY(-8deg) rotateX(1deg) rotateZ(0.3deg) translateX(-4px) translateY(-4px);
+  box-shadow:
+    24px 40px 96px rgba(0,0,0,0.7),
+    6px 12px 32px rgba(0,0,0,0.4);
+}
+
+/* Textura sutil nos cards */
+.card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    135deg,
+    transparent,
+    transparent 60px,
+    rgba(255,255,255,0.012) 60px,
+    rgba(255,255,255,0.012) 61px
+  );
+  pointer-events: none;
+}
+
+/* Reflexo de luz no topo */
+.card::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(to right, transparent 0%, rgba(255,255,255,0.10) 30%, rgba(255,255,255,0.16) 50%, rgba(255,255,255,0.10) 70%, transparent 100%);
+}
+
+/* Label do card */
+.card-label {
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(247,244,238,0.28);
+  margin-bottom: 24px;
+  font-weight: 500;
+}
+
+/* Número principal */
+.card-number {
+  font-size: clamp(38px, 5.5vw, 58px);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.025em;
+  color: var(--linen);
+  margin-bottom: 12px;
+  position: relative;
+}
+
+.card-left .card-number { color: rgba(247,244,238,0.65); }
+.card-right .card-number { color: var(--linen); }
+
+/* Prefixo R$ */
+.card-number sup {
+  font-size: 0.38em;
+  font-weight: 400;
+  vertical-align: super;
+  letter-spacing: 0;
+  opacity: 0.6;
+}
+
+/* Complemento */
+.card-complement {
+  font-size: clamp(16px, 2vw, 20px);
+  font-weight: 300;
+  color: rgba(247,244,238,0.45);
+  line-height: 1.4;
+}
+.card-right .card-complement { color: rgba(247,244,238,0.65); }
+
+/* Tag "sempre" destacada */
+.tag-always {
+  display: inline-block;
+  background: rgba(247,244,238,0.1);
+  border: 1px solid rgba(247,244,238,0.12);
+  color: rgba(247,244,238,0.9);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 4px 12px;
+  border-radius: 100px;
+  margin-top: 16px;
+}
+
+/* ── VS ── */
+.vs-wrap {
+  width: 72px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  z-index: 2;
+  position: relative;
+}
+
+.vs-line {
+  width: 1px;
+  height: 32px;
+  background: linear-gradient(to bottom, transparent, rgba(140,122,74,0.3));
+}
+.vs-line.bottom {
+  background: linear-gradient(to top, transparent, rgba(140,122,74,0.3));
+}
+
+.vs-text {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  color: var(--gold2);
+  text-transform: uppercase;
+  opacity: 0.7;
+}
+
+/* ── RODAPÉ ── */
+.rodape {
+  margin-top: 64px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  max-width: 680px;
+}
+
+.rodape-pre {
+  font-size: clamp(14px, 1.6vw, 16px);
+  font-weight: 300;
+  color: rgba(247,244,238,0.38);
+  letter-spacing: 0.03em;
+  line-height: 1.6;
+}
+
+.rodape-headline {
+  font-size: clamp(26px, 4vw, 48px);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: var(--linen);
+}
+
+.rodape-headline em {
+  font-style: italic;
+  font-weight: 300;
+  color: var(--gold2);
+}
+
+/* Linha separadora */
+.divider {
+  width: 40px;
+  height: 1px;
+  background: rgba(140,122,74,0.4);
+  margin: 4px auto 0;
+}
+
+/* ── MOBILE ── */
+@media (max-width: 680px) {
+  body { padding: 48px 20px 64px; }
+
+  .arena {
+    flex-direction: column;
+    gap: 0;
+    perspective: 800px;
+  }
+
+  .card {
+    max-width: 100%;
+    width: 100%;
+    min-height: auto;
+    padding: 36px 32px 32px;
+  }
+
+  .card-left {
+    transform: rotateX(-4deg) rotateZ(-0.5deg) translateY(8px);
+    box-shadow: 0 24px 60px rgba(0,0,0,0.6), 0 4px 16px rgba(0,0,0,0.3);
+  }
+  .card-right {
+    transform: rotateX(4deg) rotateZ(0.5deg) translateY(-8px);
+    box-shadow: 0 -16px 60px rgba(0,0,0,0.5), 0 4px 16px rgba(0,0,0,0.3);
+  }
+
+  .card-left:hover, .card-right:hover {
+    transform: none;
+  }
+
+  .vs-wrap {
+    width: auto;
+    flex-direction: row;
+    gap: 16px;
+    z-index: 3;
+    padding: 0 16px;
+    position: relative;
+  }
+  .vs-line { width: 60px; height: 1px; background: linear-gradient(to right, transparent, rgba(140,122,74,0.3)); }
+  .vs-line.bottom { background: linear-gradient(to left, transparent, rgba(140,122,74,0.3)); }
+
+  .rodape { margin-top: 48px; }
+}
+
+/* ── ENTRADA ── */
+@keyframes riseLeft {
+  from { opacity: 0; transform: rotateY(14deg) rotateX(2deg) rotateZ(-0.5deg) translateX(8px) translateY(20px); }
+  to   { opacity: 1; transform: rotateY(14deg) rotateX(2deg) rotateZ(-0.5deg) translateX(8px) translateY(0); }
+}
+@keyframes riseRight {
+  from { opacity: 0; transform: rotateY(-14deg) rotateX(2deg) rotateZ(0.5deg) translateX(-8px) translateY(20px); }
+  to   { opacity: 1; transform: rotateY(-14deg) rotateX(2deg) rotateZ(0.5deg) translateX(-8px) translateY(0); }
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.pergunta  { animation: fadeUp 0.7s cubic-bezier(0.22,1,0.36,1) 0.1s both; }
+.card-left { animation: riseLeft  0.9s cubic-bezier(0.22,1,0.36,1) 0.25s both; }
+.vs-wrap   { animation: fadeUp 0.6s cubic-bezier(0.22,1,0.36,1) 0.45s both; }
+.card-right{ animation: riseRight 0.9s cubic-bezier(0.22,1,0.36,1) 0.35s both; }
+.rodape    { animation: fadeUp 0.8s cubic-bezier(0.22,1,0.36,1) 0.6s both; }
+</style>
+</head>
+<body>
+
+  <p class="pergunta">O que você prefere?</p>
+
+  <div class="arena">
+
+    <!-- Card Esquerdo -->
+    <div class="card card-left">
+      <div class="card-label">Opção A</div>
+      <div class="card-number"><sup>R$</sup>&nbsp;1 milhão</div>
+      <div class="card-complement">a cada 3 meses.</div>
+    </div>
+
+    <!-- VS -->
+    <div class="vs-wrap">
+      <div class="vs-line"></div>
+      <span class="vs-text">vs</span>
+      <div class="vs-line bottom"></div>
+    </div>
+
+    <!-- Card Direito -->
+    <div class="card card-right">
+      <div class="card-label">Opção B</div>
+      <div class="card-number"><sup>R$</sup>&nbsp;250.000</div>
+      <div class="card-complement">por mês</div>
+      <span class="tag-always">sempre</span>
+    </div>
+
+  </div>
+
+  <!-- Rodapé -->
+  <div class="rodape">
+    <div class="divider"></div>
+    <p class="rodape-pre">Essa resposta não é sobre dinheiro...</p>
+    <h2 class="rodape-headline">É sobre o Quanto de você<br><em>Sua Família</em> Vai ter.</h2>
+  </div>
+
+</body>
+</html>
